@@ -8,7 +8,7 @@ public class TicTacToe {
     private static char[][] map;
     private static Scanner sc = new Scanner(System.in);
 
-    private final static int MAP_SIZE = 5;
+    private final static int MAP_SIZE = 7;
     private final static int DOTS_TO_WIN = 4;
 
     private static final char DOT_X = 'X';
@@ -133,30 +133,179 @@ public class TicTacToe {
         } else {
             // необходимо обнулять каждый ход компа
             AI_TURN = true;
-            /*  Самый сложный блок в написании
-                Первые три условия проверяет где больше всего совпадений символа игрока по горизонтале, по вертикале,
-                по диагонале слева направо, по диагонале справа налево
-                где больше всего совпадений там и ставиться один раз ход компа с помощью проверки AI_TURN
 
-                Такой вариант нахождения хода сработает на поле 3Х3, но не сработает на MAP_SIZE > 3 и DOTS_TO_WIN = 3,
-                если же MAP_SIZE > 3 и  DOTS_TO_WIN > 3 то в теории выйграть у компа не удастся
-            */
-
-            if (checkLineHorizontal(PLAYER_TURN_X, PLAYER_TURN_Y) <= checkLineVertical(PLAYER_TURN_X, PLAYER_TURN_Y)) {
-                if (checkLineVertical(PLAYER_TURN_X, PLAYER_TURN_Y) <= checkDiagonalLeftToRight(PLAYER_TURN_X, PLAYER_TURN_Y)) {
-                    if (checkDiagonalLeftToRight(PLAYER_TURN_X, PLAYER_TURN_Y) <= checkDiagonalRightToLeft(PLAYER_TURN_X, PLAYER_TURN_Y)) {
-                        // 2 метода чтобы не делать через еще один глобальный счетчик
-                        aITurnDiagonalRightToLeftTop(PLAYER_TURN_X, PLAYER_TURN_Y);
-                        aITurnDiagonalRightToLeftBottom(PLAYER_TURN_X, PLAYER_TURN_Y);
-                    }
-                    aITurnDiagonalLeftToRightTop(PLAYER_TURN_X, PLAYER_TURN_Y);
-                    aITurnDiagonalLeftToRightBottom(PLAYER_TURN_X, PLAYER_TURN_Y);
+            if ((PLAYER_TURN_X - 1) >= 0 && map[PLAYER_TURN_X - 1][PLAYER_TURN_Y] == DOT_X) {
+                if ((PLAYER_TURN_X + 1) < MAP_SIZE && map[PLAYER_TURN_X + 1][PLAYER_TURN_Y] == EMPTY_DOT) {
+                    map[PLAYER_TURN_X + 1][PLAYER_TURN_Y] = DOT_O;
+                    AI_TURN = false;
+                    AI_TURN_X = PLAYER_TURN_X + 1;
+                    AI_TURN_Y = PLAYER_TURN_Y;
+                } else if ((PLAYER_TURN_X - 2) >= 0 && map[PLAYER_TURN_X - 2][PLAYER_TURN_Y] == EMPTY_DOT) {
+                    map[PLAYER_TURN_X - 2][PLAYER_TURN_Y] = DOT_O;
+                    AI_TURN = false;
+                    AI_TURN_X = PLAYER_TURN_X - 2;
+                    AI_TURN_Y = PLAYER_TURN_Y;
                 }
-                aITurnVerticalTop(PLAYER_TURN_X, PLAYER_TURN_Y);
-                aITurnVerticalBottom(PLAYER_TURN_X, PLAYER_TURN_Y);
-            } else {
-                aITurnHorizontalRight(PLAYER_TURN_X, PLAYER_TURN_Y);
-                aITurnHorizontalLeft(PLAYER_TURN_X, PLAYER_TURN_Y);
+            } else if ((PLAYER_TURN_X + 1) < MAP_SIZE && map[PLAYER_TURN_X + 1][PLAYER_TURN_Y] == DOT_X) {
+                if ((PLAYER_TURN_X - 1) >= 0 && map[PLAYER_TURN_X - 1][PLAYER_TURN_Y] == EMPTY_DOT) {
+                    map[PLAYER_TURN_X - 1][PLAYER_TURN_Y] = DOT_O;
+                    AI_TURN = false;
+                    AI_TURN_X = PLAYER_TURN_X - 1;
+                    AI_TURN_Y = PLAYER_TURN_Y;
+                } else if ((PLAYER_TURN_X + 2) < MAP_SIZE && map[PLAYER_TURN_X + 2][PLAYER_TURN_Y] == EMPTY_DOT) {
+                    map[PLAYER_TURN_X + 2][PLAYER_TURN_Y] = DOT_O;
+                    AI_TURN = false;
+                    AI_TURN_X = PLAYER_TURN_X + 2;
+                    AI_TURN_Y = PLAYER_TURN_Y;
+                }
+            }
+
+            if (AI_TURN && (PLAYER_TURN_Y - 1) >= 0 && map[PLAYER_TURN_X][PLAYER_TURN_Y - 1] == DOT_X) {
+                if ((PLAYER_TURN_Y + 1) < MAP_SIZE && map[PLAYER_TURN_X][PLAYER_TURN_Y + 1] == EMPTY_DOT) {
+                    map[PLAYER_TURN_X][PLAYER_TURN_Y + 1] = DOT_O;
+                    AI_TURN = false;
+                    AI_TURN_X = PLAYER_TURN_X;
+                    AI_TURN_Y = PLAYER_TURN_Y + 1;
+                } else if (AI_TURN && (PLAYER_TURN_Y - 2) >= 0 && map[PLAYER_TURN_X][PLAYER_TURN_Y - 2] == EMPTY_DOT) {
+                    map[PLAYER_TURN_X][PLAYER_TURN_Y - 2] = DOT_O;
+                    AI_TURN = false;
+                    AI_TURN_X = PLAYER_TURN_X;
+                    AI_TURN_Y = PLAYER_TURN_Y - 2;
+                }
+            } else if (AI_TURN && (PLAYER_TURN_Y + 1) < MAP_SIZE && map[PLAYER_TURN_X][PLAYER_TURN_Y + 1] == DOT_X) {
+                if ((PLAYER_TURN_Y - 1) >= 0 && map[PLAYER_TURN_X][PLAYER_TURN_Y - 1] == EMPTY_DOT) {
+                    map[PLAYER_TURN_X][PLAYER_TURN_Y - 1] = DOT_O;
+                    AI_TURN = false;
+                    AI_TURN_X = PLAYER_TURN_X;
+                    AI_TURN_Y = PLAYER_TURN_Y - 1;
+                } else if (AI_TURN && (PLAYER_TURN_Y + 2) < MAP_SIZE && map[PLAYER_TURN_X][PLAYER_TURN_Y + 2] == EMPTY_DOT) {
+                    map[PLAYER_TURN_X][PLAYER_TURN_Y + 2] = DOT_O;
+                    AI_TURN = false;
+                    AI_TURN_X = PLAYER_TURN_X;
+                    AI_TURN_Y = PLAYER_TURN_Y + 2;
+                }
+            }
+
+            if (AI_TURN && (PLAYER_TURN_X + 1) < MAP_SIZE && (PLAYER_TURN_Y + 1) < MAP_SIZE &&
+                    map[PLAYER_TURN_X + 1][PLAYER_TURN_Y + 1] == DOT_X) {
+                if ((PLAYER_TURN_X - 1) >= 0 && (PLAYER_TURN_Y - 1) >= 0 && map[PLAYER_TURN_X - 1][PLAYER_TURN_Y - 1] == EMPTY_DOT) {
+                    map[PLAYER_TURN_X - 1][PLAYER_TURN_Y - 1] = DOT_O;
+                    AI_TURN = false;
+                    AI_TURN_X = PLAYER_TURN_X - 1;
+                    AI_TURN_Y = PLAYER_TURN_Y - 1;
+                } else if ((PLAYER_TURN_X + 2) < MAP_SIZE && (PLAYER_TURN_Y + 2) < MAP_SIZE && map[PLAYER_TURN_X + 2][PLAYER_TURN_Y + 2] == EMPTY_DOT) {
+                    map[PLAYER_TURN_X + 2][PLAYER_TURN_Y + 2] = DOT_O;
+                    AI_TURN = false;
+                    AI_TURN_X = PLAYER_TURN_X + 2;
+                    AI_TURN_Y = PLAYER_TURN_Y + 2;
+                }
+            } else if (AI_TURN && (PLAYER_TURN_X - 1) >= 0 && (PLAYER_TURN_Y - 1) >= 0 &&
+                    map[PLAYER_TURN_X - 1][PLAYER_TURN_Y - 1] == DOT_X) {
+                if ((PLAYER_TURN_X + 1) < MAP_SIZE && (PLAYER_TURN_Y + 1) < MAP_SIZE &&
+                        map[PLAYER_TURN_X + 1][PLAYER_TURN_Y + 1] == EMPTY_DOT) {
+                    map[PLAYER_TURN_X + 1][PLAYER_TURN_Y + 1] = DOT_O;
+                    AI_TURN = false;
+                    AI_TURN_X = PLAYER_TURN_X + 1;
+                    AI_TURN_Y = PLAYER_TURN_Y + 1;
+                } else if ((PLAYER_TURN_X - 2) >= 0 && (PLAYER_TURN_Y - 2) >= 0 && map[PLAYER_TURN_X - 2][PLAYER_TURN_Y - 2] == EMPTY_DOT) {
+                    map[PLAYER_TURN_X - 2][PLAYER_TURN_Y - 2] = DOT_O;
+                    AI_TURN = false;
+                    AI_TURN_X = PLAYER_TURN_X - 2;
+                    AI_TURN_Y = PLAYER_TURN_Y - 2;
+                }
+            }
+
+            if (AI_TURN && (PLAYER_TURN_X + 1) < MAP_SIZE && (PLAYER_TURN_Y - 1) >= 0 &&
+                    map[PLAYER_TURN_X + 1][PLAYER_TURN_Y - 1] == DOT_X) {
+                if ((PLAYER_TURN_X - 1) >= 0 && (PLAYER_TURN_Y + 1) < MAP_SIZE && map[PLAYER_TURN_X - 1][PLAYER_TURN_Y + 1] == EMPTY_DOT) {
+                    map[PLAYER_TURN_X - 1][PLAYER_TURN_Y + 1] = DOT_O;
+                    AI_TURN = false;
+                    AI_TURN_X = PLAYER_TURN_X - 1;
+                    AI_TURN_Y = PLAYER_TURN_Y + 1;
+                } else if ((PLAYER_TURN_X + 2) < MAP_SIZE && (PLAYER_TURN_Y - 2) >= 0 && map[PLAYER_TURN_X + 2][PLAYER_TURN_Y - 2] == EMPTY_DOT) {
+                    map[PLAYER_TURN_X + 2][PLAYER_TURN_Y - 2] = DOT_O;
+                    AI_TURN = false;
+                    AI_TURN_X = PLAYER_TURN_X + 2;
+                    AI_TURN_Y = PLAYER_TURN_Y - 2;
+                }
+            } else if (AI_TURN && (PLAYER_TURN_X - 1) >= 0 && (PLAYER_TURN_Y + 1) < MAP_SIZE &&
+                    map[PLAYER_TURN_X - 1][PLAYER_TURN_Y + 1] == DOT_X) {
+                if ((PLAYER_TURN_X + 1) < MAP_SIZE && (PLAYER_TURN_Y - 1) >= 0 &&
+                        map[PLAYER_TURN_X + 1][PLAYER_TURN_Y - 1] == EMPTY_DOT) {
+                    map[PLAYER_TURN_X + 1][PLAYER_TURN_Y - 1] = DOT_O;
+                    AI_TURN = false;
+                    AI_TURN_X = PLAYER_TURN_X + 1;
+                    AI_TURN_Y = PLAYER_TURN_Y - 1;
+                } else if ((PLAYER_TURN_X - 2) >= 0 && (PLAYER_TURN_Y + 2) < MAP_SIZE && map[PLAYER_TURN_X - 2][PLAYER_TURN_Y + 2] == EMPTY_DOT) {
+                    map[PLAYER_TURN_X - 2][PLAYER_TURN_Y + 2] = DOT_O;
+                    AI_TURN = false;
+                    AI_TURN_X = PLAYER_TURN_X - 2;
+                    AI_TURN_Y = PLAYER_TURN_Y + 2;
+                }
+            }
+
+            if (AI_TURN && (PLAYER_TURN_X + 2) < MAP_SIZE && map[PLAYER_TURN_X + 2][PLAYER_TURN_Y] == DOT_X &&
+                    map[PLAYER_TURN_X + 1][PLAYER_TURN_Y] == EMPTY_DOT) {
+                map[PLAYER_TURN_X + 1][PLAYER_TURN_Y] = DOT_O;
+                AI_TURN = false;
+                AI_TURN_X = PLAYER_TURN_X + 1;
+                AI_TURN_Y = PLAYER_TURN_Y;
+            }
+
+            if (AI_TURN && (PLAYER_TURN_Y + 2) < MAP_SIZE && map[PLAYER_TURN_X][PLAYER_TURN_Y + 1] == EMPTY_DOT &&
+                    map[PLAYER_TURN_X][PLAYER_TURN_Y + 2] == DOT_X ) {
+                map[PLAYER_TURN_X][PLAYER_TURN_Y + 1] = DOT_O;
+                AI_TURN = false;
+                AI_TURN_X = PLAYER_TURN_X;
+                AI_TURN_Y = PLAYER_TURN_Y + 1;
+            }
+
+            if (AI_TURN && (PLAYER_TURN_X - 2) >= 0 && map[PLAYER_TURN_X - 1][PLAYER_TURN_Y] == EMPTY_DOT &&
+                    map[PLAYER_TURN_X - 2][PLAYER_TURN_Y] == DOT_X) {
+                map[PLAYER_TURN_X - 1][PLAYER_TURN_Y] = DOT_O;
+                AI_TURN = false;
+                AI_TURN_X = PLAYER_TURN_X - 1;
+                AI_TURN_Y = PLAYER_TURN_Y;
+            }
+
+            if (AI_TURN && (PLAYER_TURN_Y - 2) >= 0 && map[PLAYER_TURN_X][PLAYER_TURN_Y - 1] == EMPTY_DOT &&
+                    map[PLAYER_TURN_X][PLAYER_TURN_Y - 2] == DOT_X) {
+                map[PLAYER_TURN_X][PLAYER_TURN_Y - 1] = DOT_O;
+                AI_TURN = false;
+                AI_TURN_X = PLAYER_TURN_X;
+                AI_TURN_Y = PLAYER_TURN_Y - 1;
+            }
+
+            if (AI_TURN && (PLAYER_TURN_X + 2) < MAP_SIZE && (PLAYER_TURN_Y + 2) < MAP_SIZE &&
+                    map[PLAYER_TURN_X + 1][PLAYER_TURN_Y + 1] == EMPTY_DOT && map[PLAYER_TURN_X + 2][PLAYER_TURN_Y + 2] == DOT_X) {
+                map[PLAYER_TURN_X + 1][PLAYER_TURN_Y + 1] = DOT_O;
+                AI_TURN = false;
+                AI_TURN_X = PLAYER_TURN_X + 1;
+                AI_TURN_Y = PLAYER_TURN_Y + 1;
+            }
+
+            if (AI_TURN && (PLAYER_TURN_X - 2) >= 0 && (PLAYER_TURN_Y + 2) < MAP_SIZE &&
+                    map[PLAYER_TURN_X - 1][PLAYER_TURN_Y + 1] == EMPTY_DOT && map[PLAYER_TURN_X - 2][PLAYER_TURN_Y + 2] == DOT_X) {
+                map[PLAYER_TURN_X - 1][PLAYER_TURN_Y + 1] = DOT_O;
+                AI_TURN = false;
+                AI_TURN_X = PLAYER_TURN_X - 1;
+                AI_TURN_Y = PLAYER_TURN_Y + 1;
+            }
+
+            if (AI_TURN && (PLAYER_TURN_X + 2) < MAP_SIZE && (PLAYER_TURN_Y - 2) >= 0 &&
+                    map[PLAYER_TURN_X + 1][PLAYER_TURN_Y - 1] == EMPTY_DOT && map[PLAYER_TURN_X + 2][PLAYER_TURN_Y - 2] == DOT_X) {
+                map[PLAYER_TURN_X + 1][PLAYER_TURN_Y - 1] = DOT_O;
+                AI_TURN = false;
+                AI_TURN_X = PLAYER_TURN_X + 1;
+                AI_TURN_Y = PLAYER_TURN_Y - 1;
+            }
+
+            if (AI_TURN && (PLAYER_TURN_X - 2) >= 0 && (PLAYER_TURN_Y - 2) >= 0 &&
+                    map[PLAYER_TURN_X - 1][PLAYER_TURN_Y - 1] == EMPTY_DOT && map[PLAYER_TURN_X - 2][PLAYER_TURN_Y - 2] == DOT_X) {
+                map[PLAYER_TURN_X - 1][PLAYER_TURN_Y - 1] = DOT_O;
+                AI_TURN = false;
+                AI_TURN_X = PLAYER_TURN_X - 1;
+                AI_TURN_Y = PLAYER_TURN_Y - 1;
             }
             //  Это условие впринципе не должно срабатывать, но если вдруг предыдущие условия где-то не сработали
             //  комп все равно должен сходить
@@ -165,140 +314,6 @@ public class TicTacToe {
             }
         }
     }
-
-    //  метод двигается по диагонаоли справа налево пока не найдет пустую ячейку и сделает ход
-    //  если найдет символ О или упрется в конец поля вернется назад не сделав ход
-    public static void aITurnDiagonalRightToLeftBottom(int x, int y) {
-        if (AI_TURN) {
-            if ((x + 1) < MAP_SIZE && (y - 1) >= 0) {
-                if (map[x + 1][y - 1] == EMPTY_DOT) {
-                    map[x + 1][y - 1] = DOT_O;
-                    AI_TURN_X = x + 1;
-                    AI_TURN_Y = y - 1;
-                    AI_TURN = false;
-                    return;
-                } else if (map[x + 1][y - 1] == DOT_X) {
-                    aITurnDiagonalRightToLeftBottom(x + 1, y - 1);
-                }
-            }
-        }
-    }
-
-    public static void aITurnDiagonalRightToLeftTop(int x, int y) {
-        if (AI_TURN) {
-            if ((x - 1) >= 0 && (y + 1) < MAP_SIZE) {
-                if (map[x - 1][y + 1] == EMPTY_DOT) {
-                    map[x - 1][y + 1] = DOT_O;
-                    AI_TURN_X = x - 1;
-                    AI_TURN_Y = y + 1;
-                    AI_TURN = false;
-                    return;
-                } else if (map[x - 1][y + 1] == DOT_X) {
-                    aITurnDiagonalRightToLeftTop(x - 1, y + 1);
-                }
-            }
-        }
-    }
-
-
-    public static void aITurnDiagonalLeftToRightTop(int x, int y) {
-        if (AI_TURN) {
-            if ((x - 1) >= 0 && (y - 1) >= 0) {
-                if (map[x - 1][y - 1] == EMPTY_DOT) {
-                    map[x - 1][y - 1] = DOT_O;
-                    AI_TURN_X = x - 1;
-                    AI_TURN_Y = y - 1;
-                    AI_TURN = false;
-                    return;
-                } else if (map[x - 1][y - 1] == DOT_X) {
-                    aITurnDiagonalLeftToRightTop(x - 1, y - 1);
-                }
-            }
-        }
-    }
-
-    public static void aITurnDiagonalLeftToRightBottom(int x, int y) {
-        if (AI_TURN) {
-            if ((x + 1) < MAP_SIZE && (y + 1) < MAP_SIZE) {
-                if (map[x + 1][y + 1] == EMPTY_DOT) {
-                    map[x + 1][y + 1] = DOT_O;
-                    AI_TURN_X = x + 1;
-                    AI_TURN_Y = y + 1;
-                    AI_TURN = false;
-                    return;
-                } else if (map[x + 1][y + 1] == DOT_X) {
-                    aITurnDiagonalLeftToRightBottom(x + 1, y + 1);
-                }
-            }
-        }
-    }
-
-
-    public static void aITurnHorizontalRight(int x, int y) {
-        if (AI_TURN) {
-            if ((y + 1) < MAP_SIZE) {
-                if (map[x][y + 1] == EMPTY_DOT) {
-                    map[x][y + 1] = DOT_O;
-                    AI_TURN_X = x;
-                    AI_TURN_Y = y + 1;
-                    AI_TURN = false;
-                    return;
-                } else if (map[x][y + 1] == DOT_X) {
-                    aITurnHorizontalRight(x, y + 1);
-                }
-            }
-        }
-    }
-
-    public static void aITurnHorizontalLeft(int x, int y) {
-        if (AI_TURN) {
-            if ((y - 1) >= 0) {
-                if (map[x][y - 1] == EMPTY_DOT) {
-                    map[x][y - 1] = DOT_O;
-                    AI_TURN_X = x;
-                    AI_TURN_Y = y - 1;
-                    AI_TURN = false;
-                    return;
-                } else if (map[x][y - 1] == DOT_X) {
-                    aITurnHorizontalLeft(x, y - 1);
-                }
-            }
-        }
-    }
-
-
-    public static void aITurnVerticalBottom(int x, int y) {
-        if (AI_TURN) {
-            if ((x + 1) < MAP_SIZE) {
-                if (map[x + 1][y] == EMPTY_DOT) {
-                    map[x + 1][y] = DOT_O;
-                    AI_TURN_X = x + 1;
-                    AI_TURN_Y = y;
-                    AI_TURN = false;
-                    return;
-                } else if (map[x + 1][y] == DOT_X) {
-                    aITurnVerticalBottom(x + 1, y);
-                }
-            }
-        }
-    }
-
-    public static void aITurnVerticalTop(int x, int y) {
-        if (AI_TURN) {
-            if ((x - 1) >= 0) {
-                if (map[x - 1][y] == EMPTY_DOT) {
-                    map[x - 1][y] = DOT_O;
-                    AI_TURN_X = x - 1;
-                    AI_TURN_Y = y;
-                    AI_TURN = false;
-                    return;
-                } else if (map[x - 1][y] == DOT_X) {
-                    aITurnVerticalTop(x - 1, y);
-                }
-            }
-        }
-    }
-
 
     public static void aITurnRandom() {
         int x, y;
