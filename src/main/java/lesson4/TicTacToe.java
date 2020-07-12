@@ -8,8 +8,8 @@ public class TicTacToe {
     private static char[][] map;
     private static Scanner sc = new Scanner(System.in);
 
-    private final static int MAP_SIZE = 3;
-    private final static int DOTS_TO_WIN = 3;
+    private final static int MAP_SIZE = 7;
+    private final static int DOTS_TO_WIN = 4;
 
     private static final char DOT_X = 'X';
     private static final char DOT_O = 'O';
@@ -40,20 +40,24 @@ public class TicTacToe {
                 playerTurn();
                 if (checkWin(DOT_X)) {
                     System.out.println("Победил игрок");
+                    printMap();
                     break;
                 }
                 if (!checkDraw()) {
                     System.out.println("Противостояние зашло в тупик, поэтому ничья");
+                    printMap();
                     break;
                 }
                 printMap();
                 aITurn();
                 if (checkWin(DOT_O)) {
                     System.out.println("Ты проиграл");
+                    printMap();
                     break;
                 }
                 if (!checkDraw()) {
                     System.out.println("Противостояние зашло в тупик, поэтому ничья");
+                    printMap();
                     break;
                 }
                 printMap();
@@ -64,20 +68,24 @@ public class TicTacToe {
                 aITurn();
                 if (checkWin(DOT_O)) {
                     System.out.println("Ты проиграл");
+                    printMap();
                     break;
                 }
                 if (!checkDraw()) {
                     System.out.println("Противостояние зашло в тупик, поэтому ничья");
+                    printMap();
                     break;
                 }
                 printMap();
                 playerTurn();
                 if (checkWin(DOT_X)) {
                     System.out.println("Победил игрок");
+                    printMap();
                     break;
                 }
                 if (!checkDraw()) {
                     System.out.println("Противостояние зашло в тупик, поэтому ничья");
+                    printMap();
                     break;
                 }
                 printMap();
