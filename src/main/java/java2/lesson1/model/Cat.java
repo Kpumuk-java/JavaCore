@@ -1,4 +1,6 @@
-package java2.lesson1;
+package java2.lesson1.model;
+
+import java2.lesson1.PartyMembers;
 
 public class Cat extends PartyMembers {
 

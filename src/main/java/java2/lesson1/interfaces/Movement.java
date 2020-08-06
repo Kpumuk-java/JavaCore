@@ -1,4 +1,4 @@
-package java2.lesson1;
+package java2.lesson1.interfaces;
 
 public interface Movement {
 

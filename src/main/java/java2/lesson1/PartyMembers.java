@@ -1,5 +1,9 @@
 package java2.lesson1;
 
+import java2.lesson1.interfaces.Movement;
+import java2.lesson1.model.RunningTrack;
+import java2.lesson1.model.Wall;
+
 public class PartyMembers implements Movement {
 
     private String name;

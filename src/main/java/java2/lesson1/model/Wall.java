@@ -1,6 +1,7 @@
-package java2.lesson1;
+package java2.lesson1.model;
 
 public class Wall {
+
     private int height;
 
     public Wall() {
@@ -10,7 +11,5 @@ public class Wall {
     public int getHeight() {
         return height;
     }
-
-
 
 }
