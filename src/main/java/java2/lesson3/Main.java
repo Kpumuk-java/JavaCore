@@ -9,12 +9,21 @@ public class Main {
         arraysUtils.uniqueWordsFromArraysWords(arraysUtils.getWords());
         arraysUtils.countWordsFromArraysWords(arraysUtils.getWords());*/
 
-        TelephoneDirectory.add(new TelephoneDirectory("Bill", 12536));
-        TelephoneDirectory.add(new TelephoneDirectory("Tom", 12536));
+        TelephoneDirectory telephoneDirectory = new TelephoneDirectory();
+
+        telephoneDirectory.add(new Contact("Bill", "  e1111"));
+        telephoneDirectory.add(new Contact("Клаус", "12345"));
+        telephoneDirectory.add(new Contact("Bill", "2"));
+
+        telephoneDirectory.add(new Contact("Jhon", "123"));
+        telephoneDirectory.add(new Contact("Zik", "213"));
+        telephoneDirectory.add(new Contact("Bill", "    2"));
+        telephoneDirectory.add(new Contact("Bill", "    2    "));
 
 
-        TelephoneDirectory.add(new TelephoneDirectory("Sergey", 25361));
-        TelephoneDirectory.add(new TelephoneDirectory("  BilL  ", 253614));
-        TelephoneDirectory.get("Bill");
+
+        telephoneDirectory.get("BIll");
+
+
     }
 }

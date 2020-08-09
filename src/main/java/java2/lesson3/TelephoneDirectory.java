@@ -2,49 +2,44 @@ package java2.lesson3;
 
 import java.util.*;
 
-public class TelephoneDirectory implements Comparable {
+public class TelephoneDirectory {
 
-    private String lastName;
-    private Integer number;
-    private static HashSet<TelephoneDirectory> telephoneDirectories = new HashSet<>();
 
-    public TelephoneDirectory(String lastName, Integer number) {
-        if (lastName.trim().length() > 0 && number > 0) {
-            if ((lastName.trim().length() == 1)) {
-                this.lastName = lastName.trim().toUpperCase();
-            } else {
-                this.lastName = lastName.trim().toUpperCase().charAt(0) + lastName.trim().substring(1).toLowerCase();
-            }
-            this.number = number;
+    private List<Contact> telephoneDirectories;
+
+    public TelephoneDirectory() {
+        this.telephoneDirectories = new ArrayList<>();
+    }
+
+    public void add(Contact contact) {
+
+        if (contact.getPhoneNumber() != null) {
+            telephoneDirectories.add(contact);
         }
     }
 
-    public static void add(TelephoneDirectory subscriber) {
-        telephoneDirectories.add(subscriber);
-    }
-
     /**
-     * Метод производит поиск в отсортированной коллекции telephoneDirectories по параметру lastName,
-     * при нахождении выводит на консоль все совпадения с lastName в формате (Фамилия.........Номер)
-     *
-     * @param lastName Фамилия может быть с пробелами и с разным регистром
+     * Метод сортирует коллекцию telephoneDirectories. Ищет совпадения в коллекции telephoneDirectories по lastName
+     * класса Contact с параметром взода метода lastName, Если есть совпадения ввыводит на консоль все записи в формате
+     * фамилия..........номер. Если параметр входа LastName равен null или пробелами, выводит на консоль "Некорректное
+     * значение поиска"
+     * @param lastName Строка Фамилии может быть с пробелами и разным регистром
      */
-    public static void get(String lastName) {
+    public void get(String lastName) {
+        byte count = 0;
+        telephoneDirectories.sort(Contact::compareTo);
 
-        if (lastName.trim().length() != 0) {
-            byte count = 0;
-            lastName = lastName.trim().toUpperCase().charAt(0) + lastName.trim().substring(1).toLowerCase();
-            List<TelephoneDirectory> list = new ArrayList<>(telephoneDirectories);
-            ListIterator<TelephoneDirectory> iter = list.listIterator();
+        if (lastName != null && !(lastName.isEmpty())) {
+            ListIterator iter = telephoneDirectories.listIterator();
 
             while (iter.hasNext()) {
-                TelephoneDirectory another = iter.next();
-                if (another.equals(lastName)) {
+                Contact another = (Contact) iter.next();
+                if (another.getLastName().equalsIgnoreCase(lastName.trim())) {
                     count = 1;
                     System.out.println(another.toString());
                     if (iter.hasNext()) {
-                        another = iter.next();
-                        if (!(another.equals(lastName))) {
+                        another = (Contact) iter.next();
+                        if (!(another.getLastName().equalsIgnoreCase(lastName.trim()))) {
                             break;
                         } else {
                             iter.previous();
@@ -56,34 +51,9 @@ public class TelephoneDirectory implements Comparable {
             if (count == 0) {
                 System.out.println("Абонента с такой фамилией не найден");
             }
+
         } else {
             System.out.println("Некорректное значение поиска");
         }
-    }
-
-    public boolean equals(String str) {
-        return this.lastName.equals(str);
-    }
-
-    @Override
-    public int compareTo(Object o) {
-        TelephoneDirectory another = (TelephoneDirectory) o;
-        return lastName.compareTo(another.getLastName());
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public Integer getNumber() {
-        return number;
-    }
-
-    @Override
-    public String toString() {
-        return "" +
-                "" + lastName +
-                "..............." + number
-                ;
     }
 }
