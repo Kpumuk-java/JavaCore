@@ -1,0 +1,11 @@
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox fx:controller="sample.Controller" xmlns:fx="http://javafx.com/fxml" fx:id="boxField" spacing="5" alignment="BOTTOM_CENTER" >
+    <TextArea fx:id="chatField" editable="false" VBox.vgrow="ALWAYS" focusTraversable="false"/>
+    <TextField fx:id="textMessage" onAction="#sendMessage" alignment="BOTTOM_LEFT" focusTraversable="true"/>
+    <Button text="Send Message" onAction="#sendMessage" minWidth="100" alignment="BOTTOM_CENTER" />
+
+</VBox>
