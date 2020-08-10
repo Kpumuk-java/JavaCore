@@ -1,4 +1,4 @@
-package lesson6;
+package java1.lesson6;
 
 public class Cat extends Animal {
     // count сеттер не нужен, изменится не должен, кроме как в конструкторе увеличится

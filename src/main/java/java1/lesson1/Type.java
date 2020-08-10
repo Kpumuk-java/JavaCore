@@ -1,6 +1,6 @@
-package ru.geekbrains.lesson1;
+package java1.lesson1;
 
-public class Lesson1 {
+public class Type {
 
     public static void main(String[] args) {
 
