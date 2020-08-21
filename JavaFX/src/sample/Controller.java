@@ -8,9 +8,18 @@ import javafx.scene.layout.VBox;
 
 public class Controller {
 
+    private User user;
+
+    public Controller() {
+        this.user = new User();
+        new Thread(() -> {
+            user.openConnection();
+        }).start();
+        user.setController(Controller.this);
+    }
+
     @FXML
     TextField textMessage;
-
 
     @FXML
     VBox boxField;
@@ -19,9 +28,19 @@ public class Controller {
     TextArea chatField;
 
     public void sendMessage(ActionEvent actionEvent) {
+
         if (!textMessage.getText().isEmpty()) {
-            chatField.appendText(textMessage.getText() + "\n");
-            textMessage.clear();
+            String str = textMessage.getText();
+            if (str.startsWith("/auth")) {
+                user.sendMsg(str);
+                textMessage.clear();
+            } else if (!user.isAuthorized()){
+                chatField.appendText("Incorrected command (/auth login pass)\n");
+                textMessage.clear();
+            } else {
+                user.sendMsg(str);
+                textMessage.clear();
+            }
         }
     }
 }
