@@ -17,4 +17,6 @@ public interface Server {
     AuthService getAuthService();
 
     ClientHandler getClientHandler(String nick);
+
+    String broadcastClientList();
 }

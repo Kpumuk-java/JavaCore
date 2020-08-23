@@ -12,21 +12,24 @@ public class User {
     private Socket socket;
     private DataInputStream dis;
     private DataOutputStream dos;
-    private boolean authorized;
+    private boolean authorized = false;
+    private boolean connected = false;
+
 
     Controller controller;
 
     public void openConnection() {
+        connected = true;
         try {
             socket = new Socket(SERVER_ADDR, SERVER_PORT);
             dis = new DataInputStream(socket.getInputStream());
             dos = new DataOutputStream(socket.getOutputStream());
-            setAuthorized(false);
+            authorized = false;
 
             while (true) {
                 String printServer = dis.readUTF();
                 if(printServer.startsWith("/authOk")) {
-                    setAuthorized(true);
+                    authorized = true;
                     controller.chatField.appendText(printServer + "\n");
                     break;
                 }
@@ -48,6 +51,7 @@ public class User {
             e.printStackTrace();
         } finally {
             closeConnected();
+            connected = false;
         }
     }
 
@@ -78,11 +82,11 @@ public class User {
         this.controller = con;
     }
 
-    private void setAuthorized (boolean b) {
-        authorized = b;
-    }
-
     public boolean isAuthorized() {
         return authorized;
+    }
+
+    public boolean isConnected() {
+        return connected;
     }
 }

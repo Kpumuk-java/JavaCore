@@ -14,6 +14,7 @@ public class ClientHandler {
     private Socket socket;
     private DataInputStream dis;
     private DataOutputStream dos;
+    private boolean authOK;
 
     private String nick;
 
@@ -22,17 +23,37 @@ public class ClientHandler {
     }
 
     public ClientHandler(Server server, Socket socket) {
+
         try {
             this.server = server;
             this.socket = socket;
             this.dis = new DataInputStream(socket.getInputStream());
             this.dos = new DataOutputStream(socket.getOutputStream());
             this.nick = "";
+            this.authOK = false;
             new Thread(() -> {
                 try {
-                    authentication();
-                    readMessage();
-                } catch (IOException e) {
+                    Long countTime = System.currentTimeMillis();
+                    Thread t1 = new Thread(() -> {
+                        try {
+                            authentication();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    t1.setDaemon(true);
+                    t1.start();
+
+                    while ((System.currentTimeMillis() - countTime) < 120000) {
+                        Thread.sleep(100);
+                        if (authOK) {
+                            readMessage();
+                        }
+                    }
+                    if (!authOK) {
+                        this.sendMsg("Время вышло");
+                    }
+                } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 } finally {
                     closeConnection();
@@ -44,6 +65,7 @@ public class ClientHandler {
     }
 
     private void authentication() throws IOException {
+
         while (true) {
             String str = dis.readUTF();
             if (str.startsWith("/auth")) {
@@ -55,6 +77,7 @@ public class ClientHandler {
                         this.nick = nick;
                         server.broadcastMsg(this.nick + " Join to chat");
                         server.subscribe(this);
+                        this.authOK = true;
                         return;
                     } else {
                         sendMsg("You are logged in");
@@ -64,6 +87,7 @@ public class ClientHandler {
                 }
             }
         }
+
     }
 
     public void sendMsg(String msg) {
@@ -77,42 +101,51 @@ public class ClientHandler {
     public void readMessage() throws IOException {
         while (true) {
             String clientStr = dis.readUTF();
-            System.out.println("from " + this.nick + ": " + clientStr);
-            if (clientStr.equals("/exit")) {
-                return;
-            }
             if (clientStr.startsWith("/")) {
-                String[] dataArray = clientStr.split("\\s");
-                if (messagePrivate(dataArray, clientStr)) {
-                    this.sendMsg("Incorected command");
+                if (clientStr.equals("/exit")) {
+                    return;
                 }
-            } else {
-                server.broadcastMsg(this.nick + ": " + clientStr);
+                if (clientStr.startsWith("/w")) {
+                    String[] strArray = clientStr.split("\\s");
+                    if (strArray.length > 2) {
+                        messagePrivate(this, strArray, clientStr);
+                        continue;
+                    } else {
+                        this.sendMsg("Неверная команда");
+                    }
+                }
+                if (clientStr.startsWith("/client")) {
+                    this.sendMsg(server.broadcastClientList());
+                    continue;
+                }
             }
+            server.broadcastMsg(this.nick + ": " + clientStr);
+
         }
     }
 
     /**
      * Отправляет сообщение только конкретному пользователю который в сети
-     * @param dataArray массив слов разбитый из строки которая пришла на сервер
-     * @param msg целая строка не разбитая на массив dataArray
-     * @return возвращает значение false если сообщение отправлено конкретному пользователю с ником из первого слова dataArray
+     *
+     * @param strArray массив слов разбитый из строки которая пришла на сервер
+     * @param msg      целая строка не разбитая на массив strArray
      */
-    private boolean messagePrivate(String[] dataArray, String msg) {
-        if (dataArray.length > 1) {
-            msg = msg.substring(dataArray[0].length());
-            if (server.isNickBusy(dataArray[0].substring(1))) {
-                server.getClientHandler(dataArray[0].substring(1)).sendMsg(nick + ":" + msg);
-                return false;
-            }
+    private void messagePrivate(ClientHandler client, String[] strArray, String msg) {
+        msg = msg.substring(strArray[0].length() + strArray[1].length() + 2);
+        if (server.isNickBusy(strArray[1])) {
+            server.getClientHandler(strArray[1]).sendMsg("От " + strArray[1] + ": " + msg);
+            client.sendMsg("Кому " + strArray[1] + ": " + msg);
+            return;
+        } else {
+            client.sendMsg(strArray[1] + "не подключен к чату");
         }
-
-        return true;
     }
 
     private void closeConnection() {
-        server.unsubscribe(this);
-        server.broadcastMsg(this.nick + ": out from chat");
+        if (authOK) {
+            server.unsubscribe(this);
+            server.broadcastMsg(this.nick + ": покинул чат");
+        }
 
         try {
             dis.close();

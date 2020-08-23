@@ -77,12 +77,25 @@ public class ServerImpl implements Server {
      * @return возвращает при совпадении конкретный ClientHandler
      */
     @Override
-    public ClientHandler getClientHandler(String nick) {
+    public synchronized ClientHandler getClientHandler(String nick) {
         for (ClientHandler c : clients) {
             if (c.getNick().equals(nick)) {
                 return c;
             }
         }
         return null;
+    }
+
+    /**
+     *
+     * @return Строку содержащую ники ClientHandler кто в сети
+     */
+    @Override
+    public synchronized String broadcastClientList() {
+        StringBuilder builder = new StringBuilder("Онлайн: ");
+        for (ClientHandler c : clients) {
+            builder.append(c.getNick() + " ");
+        }
+        return builder.toString();
     }
 }
