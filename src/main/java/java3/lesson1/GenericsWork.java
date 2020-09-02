@@ -10,7 +10,7 @@ public class GenericsWork {
      * @return true если поменялись местами и false если нет
      */
     public static <T> boolean swapTwoElementsForMassive(T[] array, T oneElement, T twoElement) {
-        if (array != null && array.length > 1 && (oneElement != twoElement)) {
+        if (array != null && array.length > 1 && !(oneElement.equals(twoElement))) {
             int indexOneElement = 0;
             boolean swap = false;
             for (int i = 0; i < array.length; i++) {
