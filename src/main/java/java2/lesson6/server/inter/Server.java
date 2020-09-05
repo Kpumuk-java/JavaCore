@@ -19,4 +19,6 @@ public interface Server {
     ClientHandler getClientHandler(String nick);
 
     String broadcastClientList();
+
+    void serverSwapNick(String beforeNick, String afterNick);
 }

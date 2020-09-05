@@ -98,4 +98,19 @@ public class ServerImpl implements Server {
         }
         return builder.toString();
     }
+
+    /**
+     * Заменяет старый ник beforeNick в базе данных и ClientHandler на новый afterNick
+     * @param beforeNick
+     * @param afterNick
+     */
+    @Override
+    public synchronized void serverSwapNick(String beforeNick, String afterNick) {
+        if (getClientHandler(beforeNick) != null) {
+            authService.swapNick(beforeNick, afterNick);
+            getClientHandler(beforeNick).setNick(afterNick);
+        }
+    }
+
+
 }

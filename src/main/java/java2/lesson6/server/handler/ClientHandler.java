@@ -114,6 +114,15 @@ public class ClientHandler {
                         this.sendMsg("Неверная команда");
                     }
                 }
+                if (clientStr.startsWith("/swap")) {
+                    String[] strArray = clientStr.split("\\s");
+                    if (strArray.length > 2 && strArray[2].trim().length() > 3) {
+                        server.serverSwapNick(strArray[1], strArray[2]);
+                        continue;
+                    } else {
+                        this.sendMsg("Неверная команда");
+                    }
+                }
                 if (clientStr.startsWith("/client")) {
                     this.sendMsg(server.broadcastClientList());
                     continue;
@@ -164,5 +173,10 @@ public class ClientHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public ClientHandler setNick(String nick) {
+        this.nick = nick;
+        return this;
     }
 }
