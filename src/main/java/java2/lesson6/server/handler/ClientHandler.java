@@ -8,6 +8,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
+import static java2.lesson6.server.service.ServerImpl.LOGGER;
+
 public class ClientHandler {
 
     private Server server;
@@ -60,6 +62,7 @@ public class ClientHandler {
                 }
             }).start();
         } catch (IOException e) {
+            LOGGER.warn("Problems creating handler client", e);
             throw new RuntimeException("Проблемы при создании обработчика клиента");
         }
     }
@@ -78,6 +81,7 @@ public class ClientHandler {
                         server.broadcastMsg(this.nick + " Join to chat");
                         server.subscribe(this);
                         this.authOK = true;
+                        LOGGER.info("Passed authorization " + nick);
                         return;
                     } else {
                         sendMsg("You are logged in");
@@ -101,6 +105,7 @@ public class ClientHandler {
     public void readMessage() throws IOException {
         while (true) {
             String clientStr = dis.readUTF();
+            LOGGER.info(nick + " write: " + clientStr);
             if (clientStr.startsWith("/")) {
                 if (clientStr.equals("/exit")) {
                     return;
@@ -114,10 +119,10 @@ public class ClientHandler {
                         this.sendMsg("Неверная команда");
                     }
                 }
-                if (clientStr.startsWith("/swap")) {
+                if (clientStr.startsWith("/change")) {
                     String[] strArray = clientStr.split("\\s");
                     if (strArray.length > 2 && strArray[2].trim().length() > 3) {
-                        server.serverSwapNick(strArray[1], strArray[2]);
+                        server.changeNickOnServer(strArray[1], strArray[2]);
                         continue;
                     } else {
                         this.sendMsg("Неверная команда");
@@ -176,6 +181,7 @@ public class ClientHandler {
     }
 
     public ClientHandler setNick(String nick) {
+        LOGGER.info("Change nick " + this.nick + " on " + nick + " from ClientHandler");
         this.nick = nick;
         return this;
     }

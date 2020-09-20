@@ -20,5 +20,5 @@ public interface Server {
 
     String broadcastClientList();
 
-    void serverSwapNick(String beforeNick, String afterNick);
+    void changeNickOnServer(String beforeNick, String afterNick);
 }

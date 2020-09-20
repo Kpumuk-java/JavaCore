@@ -7,6 +7,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import static java2.lesson6.server.service.ServerImpl.LOGGER;
+
 public class AuthServiceImpl implements AuthService {
 
     private PreparedStatement ps = null;
@@ -44,20 +46,18 @@ public class AuthServiceImpl implements AuthService {
             ps = DBConn
                     .getInstance()
                     .getConn()
-                    .prepareStatement("SELECT * FROM users WHERE login = ?");
+                    .prepareStatement("SELECT * FROM users WHERE login = ? AND pass = ?");
             ps.setString(1, login);
+            ps.setString(2, password);
 
             ResultSet set = ps.executeQuery();
+            return set.getString("NICK");
 
-            if (set.next() && set.getString("PASS").equals(password)) {
-                return set.getString("NICK");
-            }
         } catch (SQLException e) {
             e.printStackTrace();
+            LOGGER.warn("Do not return nick from DB");
             return null;
         }
-
-        return null;
     }
 
     /**
@@ -67,11 +67,12 @@ public class AuthServiceImpl implements AuthService {
      * @param afterNick
      */
     @Override
-    public void swapNick(String beforeNick, String afterNick) {
+    public void changeNick(String beforeNick, String afterNick) {
         String login = null, pass = null;
 
         try {
             DBConn.getInstance().getConn().setAutoCommit(false);
+            LOGGER.info("disable setAutoCommit in DB");
             ps = DBConn
                     .getInstance()
                     .getConn()
@@ -92,20 +93,25 @@ public class AuthServiceImpl implements AuthService {
                 ps.setString(2, pass);
                 ps.setString(3, afterNick);
                 ps.executeUpdate();
+                LOGGER.info("Change NICK " + beforeNick + "on " + afterNick);
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            LOGGER.warn("Not change NICK " + beforeNick + "on " + afterNick, e);
             try {
                 DBConn.getInstance().getConn().rollback();
                 DBConn.getInstance().getConn().setAutoCommit(true);
             } catch (SQLException ex) {
+                LOGGER.warn("Failed to undo nick " + beforeNick + "change actions", ex);
                 ex.printStackTrace();
             }
         }
 
         try {
             DBConn.getInstance().getConn().setAutoCommit(true);
+            LOGGER.info("Enable setAutoCommit in DB");
         } catch (SQLException e) {
+            LOGGER.warn("Do not enable setAutoCommit in DB");
             e.printStackTrace();
         }
 

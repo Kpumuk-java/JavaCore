@@ -1,10 +1,10 @@
 package java2.lesson6.server.service;
 
-
-
 import java2.lesson6.server.handler.ClientHandler;
 import java2.lesson6.server.inter.AuthService;
 import java2.lesson6.server.inter.Server;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -13,8 +13,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 
+
 public class ServerImpl implements Server {
 
+
+    public static final Logger LOGGER = LogManager.getLogger(ServerImpl.class);
     private List<ClientHandler> clients;
     private AuthService authService;
 
@@ -29,9 +32,10 @@ public class ServerImpl implements Server {
                 Socket socket = serverSocket.accept();
                 System.out.println("Client join");
                 new ClientHandler(this, socket);
+                LOGGER.info("Connect client");
             }
         } catch (IOException e) {
-            System.out.println("Problem in server");
+            LOGGER.warn("Problem in server", e);
         } finally {
             if (authService != null) {
                 authService.stop();
@@ -105,9 +109,9 @@ public class ServerImpl implements Server {
      * @param afterNick
      */
     @Override
-    public synchronized void serverSwapNick(String beforeNick, String afterNick) {
+    public synchronized void changeNickOnServer(String beforeNick, String afterNick) {
         if (getClientHandler(beforeNick) != null) {
-            authService.swapNick(beforeNick, afterNick);
+            authService.changeNick(beforeNick, afterNick);
             getClientHandler(beforeNick).setNick(afterNick);
         }
     }
