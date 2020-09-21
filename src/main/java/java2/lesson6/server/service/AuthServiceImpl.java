@@ -2,16 +2,21 @@ package java2.lesson6.server.service;
 
 import java2.lesson6.server.inter.AuthService;
 import java3.lesson2.DBConn;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static java2.lesson6.server.service.ServerImpl.LOGGER;
 
 public class AuthServiceImpl implements AuthService {
 
     private PreparedStatement ps = null;
+    private static Logger LOGGER;
+
+    {
+        LOGGER = ServerImpl.getLOGGER();
+    }
 
     public void addUser(String login, String pass, String nick) throws SQLException {
         ps = DBConn

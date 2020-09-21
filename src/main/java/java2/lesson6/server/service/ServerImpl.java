@@ -17,9 +17,13 @@ import java.util.List;
 public class ServerImpl implements Server {
 
 
-    public static final Logger LOGGER = LogManager.getLogger(ServerImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(ServerImpl.class);
     private List<ClientHandler> clients;
     private AuthService authService;
+
+    public static Logger getLOGGER() {
+        return LOGGER;
+    }
 
     public ServerImpl() {
         try {

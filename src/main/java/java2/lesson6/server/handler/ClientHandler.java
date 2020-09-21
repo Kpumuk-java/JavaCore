@@ -2,13 +2,13 @@ package java2.lesson6.server.handler;
 
 
 import java2.lesson6.server.inter.Server;
+import java2.lesson6.server.service.ServerImpl;
+import org.apache.logging.log4j.Logger;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-
-import static java2.lesson6.server.service.ServerImpl.LOGGER;
 
 public class ClientHandler {
 
@@ -17,8 +17,12 @@ public class ClientHandler {
     private DataInputStream dis;
     private DataOutputStream dos;
     private boolean authOK;
-
+    private static Logger LOGGER;
     private String nick;
+
+    {
+        LOGGER = ServerImpl.getLOGGER();
+    }
 
     public String getNick() {
         return nick;
